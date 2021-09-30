@@ -8,7 +8,8 @@ class SeedDump
       current_file_index = 1
       limit = retrieve_limit_value(env)
       append = retrieve_append_value(env)
-      models.each do |model|
+
+      DependencyUnwrangler.new(models).evaluation_order.each do |model|
         model = model.limit(limit) if limit.present?
         options = {
           append: append,
@@ -19,7 +20,7 @@ class SeedDump
           file: retrieve_file_value(env),
           import: retrieve_import_value(env),
           current_file_index: current_file_index,
-          import_options: retrieve_import_options(env),
+          import_options: retrieve_import_options(env)
         }
 
         SeedDump.dump(model, options)
