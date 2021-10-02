@@ -5,74 +5,72 @@
 # stub: db_seed_dump 1.0.0 ruby lib
 
 Gem::Specification.new do |s|
-  s.name = "db_seed_dump".freeze
-  s.version = "1.0.0"
+  s.name = 'db_seed_dump'.freeze
+  s.version = '1.0.0'
 
-  s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
-  s.require_paths = ["lib".freeze]
-  s.authors = ["Rob Halff".freeze, "Ryan Oblak".freeze, "Nick Flueckiger".freeze]
-  s.date = "2021-10-02"
-  s.description = "Dump (parts) of your database to db/seeds.rb to get a headstart creating a meaningful seeds.rb file".freeze
-  s.email = "nick.flueckiger@renuo.ch".freeze
-  s.executables = ["fastcheck".freeze]
+  s.required_rubygems_version = Gem::Requirement.new('>= 0'.freeze) if s.respond_to? :required_rubygems_version=
+  s.require_paths = ['lib'.freeze]
+  s.authors = ['Rob Halff'.freeze, 'Ryan Oblak'.freeze, 'Nick Flueckiger'.freeze]
+  s.description = 'Dump (parts) of your database to db/seeds.rb to get a headstart creating a meaningful seeds.rb file'.freeze
+  s.email = 'nick.flueckiger@renuo.ch'.freeze
+  s.executables = ['fastcheck'.freeze]
   s.extra_rdoc_files = [
-    "README.md"
+    'README.md'
   ]
   s.files = [
-    ".rspec",
-    ".rubocop.yml",
-    ".rubocop_todo.yml",
-    "Gemfile",
-    "MIT-LICENSE",
-    "README.md",
-    "Rakefile",
-    "VERSION",
-    "db_seed_dump.gemspec",
-    "lib/seed_dump.rb",
-    "lib/seed_dump/dump_methods.rb",
-    "lib/seed_dump/dump_methods/enumeration.rb",
-    "lib/seed_dump/environment.rb",
-    "lib/seed_dump/railtie.rb",
-    "lib/tasks/seed_dump.rake",
-    "spec/dump_methods_spec.rb",
-    "spec/environment_spec.rb",
-    "spec/factories/another_samples.rb",
-    "spec/factories/samples.rb",
-    "spec/factories/yet_another_samples.rb",
-    "spec/helpers.rb",
-    "spec/spec_helper.rb"
+    '.rspec',
+    '.rubocop.yml',
+    '.rubocop_todo.yml',
+    'Gemfile',
+    'MIT-LICENSE',
+    'README.md',
+    'Rakefile',
+    'VERSION',
+    'bin/fastcheck',
+    'lib/seed_dump.rb',
+    'lib/seed_dump/dependency_unwrangler.rb',
+    'lib/seed_dump/dump_methods.rb',
+    'lib/seed_dump/dump_methods/enumeration.rb',
+    'lib/seed_dump/environment.rb',
+    'lib/seed_dump/railtie.rb',
+    'lib/tasks/seed_dump.rake',
+    'seed_dump.gemspec',
+    'spec/dump_methods_spec.rb',
+    'spec/environment_spec.rb',
+    'spec/factories/another_samples.rb',
+    'spec/factories/samples.rb',
+    'spec/factories/yet_another_samples.rb',
+    'spec/helpers.rb',
+    'spec/spec_helper.rb'
   ]
-  s.homepage = "https://github.com/reno/seed_dump".freeze
-  s.licenses = ["MIT".freeze]
-  s.rubygems_version = "3.2.22".freeze
-  s.summary = "{Seed Dumper for Rails}".freeze
+  s.homepage = 'https://github.com/reno/seed_dump'.freeze
+  s.licenses = ['MIT'.freeze]
+  s.rubygems_version = '3.2.22'.freeze
+  s.summary = '{Seed Dumper for Rails}'.freeze
 
-  if s.respond_to? :specification_version then
-    s.specification_version = 4
-  end
+  s.specification_version = 4 if s.respond_to? :specification_version
 
-  if s.respond_to? :add_runtime_dependency then
-    s.add_runtime_dependency(%q<activerecord>.freeze, [">= 4"])
-    s.add_runtime_dependency(%q<activesupport>.freeze, [">= 4"])
-    s.add_runtime_dependency(%q<rgl>.freeze, [">= 0"])
-    s.add_development_dependency(%q<activerecord-import>.freeze, ["~> 0.4"])
-    s.add_development_dependency(%q<byebug>.freeze, ["~> 11.0"])
-    s.add_development_dependency(%q<factory_bot>.freeze, ["~> 4.8.2"])
-    s.add_development_dependency(%q<rubocop>.freeze, [">= 0"])
-    s.add_development_dependency(%q<rubocop-performance>.freeze, [">= 0"])
-    s.add_development_dependency(%q<rubocop-rspec>.freeze, [">= 0"])
-    s.add_development_dependency(%q<jeweler>.freeze, ["~> 2.0"])
+  if s.respond_to? :add_runtime_dependency
+    s.add_runtime_dependency('activerecord'.freeze, ['>= 4'])
+    s.add_runtime_dependency('activesupport'.freeze, ['>= 4'])
+    s.add_runtime_dependency('rgl'.freeze, ['>= 0'])
+    s.add_development_dependency('activerecord-import'.freeze, ['~> 0.4'])
+    s.add_development_dependency('byebug'.freeze, ['~> 11.0'])
+    s.add_development_dependency('factory_bot'.freeze, ['~> 4.8.2'])
+    s.add_development_dependency('rubocop'.freeze, ['>= 0'])
+    s.add_development_dependency('rubocop-performance'.freeze, ['>= 0'])
+    s.add_development_dependency('rubocop-rspec'.freeze, ['>= 0'])
+    s.add_development_dependency('jeweler'.freeze, ['~> 2.0'])
   else
-    s.add_dependency(%q<activerecord>.freeze, [">= 4"])
-    s.add_dependency(%q<activesupport>.freeze, [">= 4"])
-    s.add_dependency(%q<rgl>.freeze, [">= 0"])
-    s.add_dependency(%q<activerecord-import>.freeze, ["~> 0.4"])
-    s.add_dependency(%q<byebug>.freeze, ["~> 11.0"])
-    s.add_dependency(%q<factory_bot>.freeze, ["~> 4.8.2"])
-    s.add_dependency(%q<rubocop>.freeze, [">= 0"])
-    s.add_dependency(%q<rubocop-performance>.freeze, [">= 0"])
-    s.add_dependency(%q<rubocop-rspec>.freeze, [">= 0"])
-    s.add_dependency(%q<jeweler>.freeze, ["~> 2.0"])
+    s.add_dependency('activerecord'.freeze, ['>= 4'])
+    s.add_dependency('activesupport'.freeze, ['>= 4'])
+    s.add_dependency('rgl'.freeze, ['>= 0'])
+    s.add_dependency('activerecord-import'.freeze, ['~> 0.4'])
+    s.add_dependency('byebug'.freeze, ['~> 11.0'])
+    s.add_dependency('factory_bot'.freeze, ['~> 4.8.2'])
+    s.add_dependency('rubocop'.freeze, ['>= 0'])
+    s.add_dependency('rubocop-performance'.freeze, ['>= 0'])
+    s.add_dependency('rubocop-rspec'.freeze, ['>= 0'])
+    s.add_dependency('jeweler'.freeze, ['~> 2.0'])
   end
 end
-

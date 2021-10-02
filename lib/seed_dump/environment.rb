@@ -5,21 +5,40 @@ class SeedDump
 
       models = retrieve_models(env) - retrieve_models_exclude(env)
 
+      current_file_index = 1
       limit = retrieve_limit_value(env)
       append = retrieve_append_value(env)
+
+      # Eliminate HABTM models that have the same underlying table; otherwise
+      # they'll be dumped twice, once in each direction. Probably should apply
+      # to all models, but it's possible there are edge cases in which this
+      # is not the right behavior.
+
+      habtm, non_habtm = models.partition { |m| m.name =~ /^HABTM_/ }
+      models = non_habtm + habtm.uniq(&:table_name)
+
+      resolved_dependencies = DependencyUnwrangler.new(models).evaluation_order - retrieve_models_exclude(env)
+      models = resolved_dependencies unless resolved_dependencies.empty?
       models.each do |model|
         model = model.limit(limit) if limit.present?
+        options = {
+          append: append,
+          batch_size: retrieve_batch_size_value(env),
+          exclude: retrieve_dump_all_value(env) ? [] : retrieve_exclude_value(env),
+          insert_all: retrieve_insert_all_value(env),
+          file_split_limit: retreive_file_split_limit_value(env),
+          file: retrieve_file_value(env),
+          import: retrieve_import_value(env),
+          current_file_index: current_file_index,
+          import_options: retrieve_import_options(env)
+        }
 
-        SeedDump.dump(model,
-                      append: append,
-                      batch_size: retrieve_batch_size_value(env),
-                      exclude: retrieve_exclude_value(env),
-                      file: retrieve_file_value(env),
-                      import: retrieve_import_value(env))
+        SeedDump.dump(model, options)
 
         append = true # Always append for every model after the first
         # (append for the first model is determined by
         # the APPEND environment variable).
+        current_file_index = options[:current_file_index]
       end
     end
 
@@ -84,11 +103,36 @@ class SeedDump
       parse_boolean_value(env['APPEND'])
     end
 
+    # Internal: Returns a Boolean indicating whether the value for the "FILE_SPLIT_COUNT"
+    # key in the given Hash is equal to the String "true" (ignoring case),
+    # false if no value exists.
+    def retreive_file_split_limit_value(env)
+      retrieve_integer_value('FILE_SPLIT_LIMIT', env)
+    end
+
     # Internal: Returns a Boolean indicating whether the value for the "IMPORT"
     # key in the given Hash is equal to the String "true" (ignoring case),
     # false if  no value exists.
     def retrieve_import_value(env)
       parse_boolean_value(env['IMPORT'])
+    end
+
+    def retrieve_import_options(env)
+      env['IMPORT_OPTIONS']
+    end
+
+    # Internal: Returns a Boolean indicating whether the value for the "INSERT_ALL"
+    # key in the given Hash is equal to the String "true" (ignoring case),
+    # false if  no value exists.
+    def retrieve_insert_all_value(env)
+      parse_boolean_value(env['INSERT_ALL'])
+    end
+
+    # Internal: Returns a Boolean indicating whether the value for the "DUMP_ALL"
+    # key in the given Hash is equal to the String "true" (ignoring case),
+    # false if no value exists.
+    def retrieve_dump_all_value(env)
+      parse_boolean_value(env['DUMP_ALL'])
     end
 
     # Internal: Retrieves an Array of Class constants parsed from the value for
@@ -127,7 +171,7 @@ class SeedDump
     # Internal: Retrieves an Integer from the value for the given key in
     # the given Hash, and nil if no such key exists.
     def retrieve_integer_value(key, hash)
-      hash[key] ? hash[key].to_i : nil
+      hash[key]&.to_i
     end
 
     # Internal: Parses a Boolean from the given value.

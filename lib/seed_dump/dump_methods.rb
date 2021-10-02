@@ -1,5 +1,7 @@
 class SeedDump
   module DumpMethods
+    APPEND_FILE_MODE = 'a+'.freeze
+    OVERWRITE_FILE_MODE = 'w+'.freeze
     include Enumeration
 
     def dump(records, options = {})
@@ -61,23 +63,34 @@ class SeedDump
 
     def open_io(options)
       if options[:file].present?
-        mode = options[:append] ? 'a+' : 'w+'
+        mode = options[:append] ? APPEND_FILE_MODE : OVERWRITE_FILE_MODE
+        file_path = if options[:file_split_limit]
+                      file_path_with_file_index(options)
+                    else
+                      options[:file]
+                    end
 
-        File.open(options[:file], mode)
+        File.open(file_path, mode)
       else
-        StringIO.new('', 'w+')
+        StringIO.new('', OVERWRITE_FILE_MODE)
       end
+    end
+
+    def file_path_with_file_index(options)
+      base_name = File.basename(options[:file], '.*')
+      options[:file].reverse.sub(
+        base_name.reverse,
+        [
+          base_name,
+          (options[:current_file_index]&.to_i || 1)
+        ].join('_').reverse
+      ).reverse
     end
 
     def write_records_to_io(records, io, options)
       options[:exclude] ||= %i[id created_at updated_at]
 
-      method = options[:import] ? 'import' : 'create!'
-      io.write("#{model_for(records)}.#{method}(")
-      if options[:import]
-        io.write("[#{attribute_names(records, options).map { |name| name.to_sym.inspect }.join(', ')}], ")
-      end
-      io.write("[\n  ")
+      setup_io(io, options, records)
 
       enumeration_method = if records.is_a?(ActiveRecord::Relation) || records.is_a?(Class)
                              :active_record_enumeration
@@ -85,10 +98,17 @@ class SeedDump
                              :enumerable_enumeration
                            end
 
-      send(enumeration_method, records, io, options) do |record_strings, last_batch|
+      send(enumeration_method, records, io, options) do |record_strings, last_batch, file_split_required|
         io.write(record_strings.join(",\n  "))
 
         io.write(",\n  ") unless last_batch
+
+        if options[:file].present? && file_split_required
+          options[:current_file_index] = ((options[:current_file_index]&.to_i || 1) + 1)
+          io.write("\n]#{active_record_import_options(options)})\n")
+          io = open_io(options)
+          setup_io(io, options, records)
+        end
       end
 
       io.write("\n]#{active_record_import_options(options)})\n")
@@ -101,10 +121,33 @@ class SeedDump
       end
     end
 
-    def active_record_import_options(options)
-      return unless options[:import].is_a?(Hash)
+    def setup_io(io, options, records)
+      method = chosen_creation_method(options)
+      io.write("#{model_for(records)}.#{method}(")
+      if options[:import]
+        io.write("[#{attribute_names(records, options).map { |name| name.to_sym.inspect }.join(', ')}], ")
+      end
+      io.write("[\n  ")
+    end
 
-      ', ' + options[:import].map { |key, value| "#{key}: #{value}" }.join(', ')
+    def chosen_creation_method(options)
+      if options[:import]
+        'import'
+      elsif options[:insert_all]
+        'insert_all'
+      else
+        'create!'
+      end
+    end
+
+    def active_record_import_options(options)
+      return unless options[:import].is_a?(Hash) || options[:import_options].present?
+
+      if options[:import].is_a?(Hash)
+        ', ' + options[:import].map { |key, value| "#{key}: #{value}" }.join(', ')
+      else
+        ', ' + options[:import_options]
+      end
     end
 
     def attribute_names(records, options)

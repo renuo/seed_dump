@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe SeedDump do
-  def expected_output(include_id = false, id_offset = 0)
-    output = "Sample.create!([\n  "
+  def expected_output(operation: 'create!', include_id: false, id_offset: 0)
+    output = "Sample.#{operation}([\n  "
 
     data = []
     ((1 + id_offset)..(3 + id_offset)).each do |i|
@@ -52,6 +52,21 @@ describe SeedDump do
       end
     end
 
+    context 'with file option and file split option' do
+      let(:file_path) { Tempfile.new('./foo').path }
+      let(:result_file_path) { [file_path, '1'].join('_') }
+
+      after do
+        File.unlink(result_file_path)
+      end
+
+      it 'stores the information in file_path with file index' do
+        described_class.dump(Sample, file: file_path, file_split_limit: 5)
+
+        File.open(result_file_path) { |file| expect(file.read).to eq(expected_output) }
+      end
+    end
+
     context 'ActiveRecord relation' do
       it 'returns nil if the count is 0' do
         described_class.dump(EmptyModel).should be(nil)
@@ -83,7 +98,10 @@ describe SeedDump do
           Sample.delete_all
           FactoryBot.create_list(:sample, 4)
 
-          described_class.dump(Sample.limit(3), batch_size: 2).should eq(expected_output(false, 3))
+          described_class.dump(Sample.limit(3), batch_size: 2).should eq(
+            expected_output(include_id: false,
+                            id_offset: 3)
+          )
         end
       end
     end
@@ -124,6 +142,12 @@ describe SeedDump do
         expected_output = "RangeSample.create!([\n  {range_with_end_included: \"[1,3]\", range_with_end_excluded: \"[1,3)\", positive_infinite_range: \"[1,]\", negative_infinite_range: \"[,1]\", infinite_range: \"[,]\"}\n])\n"
 
         described_class.dump([RangeSample.new]).should eq(expected_output)
+      end
+    end
+
+    context 'activerecord-insert-all' do
+      it 'dumps in the activerecord-insert-all format when insert-all is true' do
+        described_class.dump(Sample, insert_all: true).should eq(expected_output(operation: 'insert_all'))
       end
     end
 
