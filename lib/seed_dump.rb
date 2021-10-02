@@ -1,4 +1,7 @@
 require 'ipaddr'
+require 'rgl/adjacency'
+require 'rgl/topsort'
+
 require 'seed_dump/dump_methods/enumeration'
 require 'seed_dump/dump_methods'
 require 'seed_dump/environment'

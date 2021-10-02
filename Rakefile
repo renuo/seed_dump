@@ -4,12 +4,12 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = 'seed_dump'
+    gem.name = 'db_seed_dump'
     gem.summary = '{Seed Dumper for Rails}'
     gem.description = %{Dump (parts) of your database to db/seeds.rb to get a headstart creating a meaningful seeds.rb file}
-    gem.email = 'rroblak@gmail.com'
-    gem.homepage = 'https://github.com/rroblak/seed_dump'
-    gem.authors = ['Rob Halff', 'Ryan Oblak']
+    gem.email = 'nick.flueckiger@renuo.ch'
+    gem.homepage = 'https://github.com/reno/seed_dump'
+    gem.authors = ['Rob Halff', 'Ryan Oblak', 'Nick Flueckiger']
     gem.license = 'MIT'
   end
   Jeweler::GemcutterTasks.new
@@ -22,7 +22,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ''
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "seed_dump #{version}"
+  rdoc.title = "db_seed_dump #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end

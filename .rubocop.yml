@@ -85,14 +85,7 @@ AllCops:
   NewCops: enable
   Exclude:
     - 'bin/**/*'
-    - 'script/**/*'
-    - 'log/**/*'
-    - 'public/**/*'
-    - 'tmp/**/*'
-    - 'db/schema.rb'
-    - 'vendor/**/*'
-    - 'node_modules/**/*'
-    - 'config/initializers/simple_form_bootstrap.rb'
+    - 'db_seed_dump.gemspec'
 
 inherit_mode:
   merge:

@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activerecord', '>= 4'
 gem 'activesupport', '>= 4'
+gem 'rgl'
 
 group :development, :test do
   gem 'activerecord-import', '~> 0.4'
