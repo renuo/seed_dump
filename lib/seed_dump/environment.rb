@@ -9,7 +9,15 @@ class SeedDump
       limit = retrieve_limit_value(env)
       append = retrieve_append_value(env)
 
-      DependencyUnwrangler.new(models).evaluation_order.each do |model|
+      # Eliminate HABTM models that have the same underlying table; otherwise 
+      # they'll be dumped twice, once in each direction. Probably should apply
+      # to all models, but it's possible there are edge cases in which this 
+      # is not the right behavior.
+
+      habtm, non_habtm = models.partition {|m| m.name =~ /^HABTM_/}
+      models = non_habtm + habtm.uniq { |m| m.table_name }
+
+      (DependencyUnwrangler.new(models).evaluation_order - retrieve_models_exclude(env)).each do |model|
         model = model.limit(limit) if limit.present?
         options = {
           append: append,

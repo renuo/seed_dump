@@ -22,8 +22,8 @@ class SeedDump
     private
 
     def build_graph
-      models.map do |model|
-        referents_by_model(model).each do |_refrent|
+      @models.map do |model|
+        referents_by_model(model).each do |referent|
           @graph.add_edge(model, referent)
         end
       end
