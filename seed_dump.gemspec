@@ -47,6 +47,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('activesupport'.freeze, ['>= 4'])
   s.add_runtime_dependency('activerecord'.freeze, ['>= 4'])
   s.add_dependency('byebug'.freeze, ['~> 11.0'])
+  s.add_dependency('rgl'.freeze, ['~> 0.5.7'])
   s.add_development_dependency('factory_bot'.freeze, ['~> 4.8.2'])
   s.add_development_dependency('activerecord-import'.freeze, ['~> 0.4'])
   s.add_development_dependency('jeweler'.freeze, ['~> 2.0'])
