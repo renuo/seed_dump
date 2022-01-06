@@ -9,15 +9,15 @@ class Rails
     @already_called ||= false
 
     unless @already_called
-      Object.const_set('Sample', Class.new(ActiveRecord::Base))
+      Object.const_set(:Sample, Class.new(ActiveRecord::Base))
 
-      Object.const_set('AnotherSample', Class.new(ActiveRecord::Base))
+      Object.const_set(:AnotherSample, Class.new(ActiveRecord::Base))
 
-      Object.const_set('YetAnotherSample', Class.new(ActiveRecord::Base))
+      Object.const_set(:YetAnotherSample, Class.new(ActiveRecord::Base))
 
-      Object.const_set('NoTableModel', Class.new(ActiveRecord::Base))
+      Object.const_set(:NoTableModel, Class.new(ActiveRecord::Base))
 
-      Object.const_set('EmptyModel', Class.new(ActiveRecord::Base))
+      Object.const_set(:EmptyModel, Class.new(ActiveRecord::Base))
 
       @already_called = true
     end

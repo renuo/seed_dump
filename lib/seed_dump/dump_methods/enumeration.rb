@@ -69,9 +69,7 @@ class SeedDump
 
         count = records.count
 
-        if count < batch_size
-          batch_size = count
-        end
+        batch_size = count if count < batch_size
 
         remainder = count % batch_size
 

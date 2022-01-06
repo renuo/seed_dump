@@ -18,7 +18,7 @@ describe SeedDump do
 
       create_db
 
-      FactoryBot.create_list(:sample, 3)
+      create_list(:sample, 3)
     end
 
     context 'without file option' do
@@ -75,7 +75,7 @@ describe SeedDump do
       context 'with an order parameter' do
         it 'dumps the models in the specified order' do
           Sample.delete_all
-          samples = 3.times { |i| FactoryBot.create(:sample, integer: i) }
+          samples = 3.times { |i| create(:sample, integer: i) }
 
           described_class.dump(Sample.order('integer DESC')).should eq("Sample.create!([\n  {string: \"string\", text: \"text\", integer: 2, float: 3.14, decimal: \"2.72\", datetime: \"1776-07-04 19:14:00\", time: \"2000-01-01 03:15:00\", date: \"1863-11-19\", binary: \"binary\", boolean: false},\n  {string: \"string\", text: \"text\", integer: 1, float: 3.14, decimal: \"2.72\", datetime: \"1776-07-04 19:14:00\", time: \"2000-01-01 03:15:00\", date: \"1863-11-19\", binary: \"binary\", boolean: false},\n  {string: \"string\", text: \"text\", integer: 0, float: 3.14, decimal: \"2.72\", datetime: \"1776-07-04 19:14:00\", time: \"2000-01-01 03:15:00\", date: \"1863-11-19\", binary: \"binary\", boolean: false}\n])\n")
         end
@@ -96,7 +96,7 @@ describe SeedDump do
 
         it 'dumps the number of models specified by the limit when the limit is larger than the batch size but not a multiple of the batch size' do
           Sample.delete_all
-          FactoryBot.create_list(:sample, 4)
+          create_list(:sample, 4)
 
           described_class.dump(Sample.limit(3), batch_size: 2).should eq(
             expected_output(include_id: false,

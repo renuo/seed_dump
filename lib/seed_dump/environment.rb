@@ -3,7 +3,7 @@ class SeedDump
     def dump_using_environment(env = {})
       Rails.application.eager_load!
 
-      models = retrieve_models(env) - retrieve_models_exclude(env)
+      models = retrieve_models(env)
 
       current_file_index = 1
       limit = retrieve_limit_value(env)
@@ -83,6 +83,8 @@ class SeedDump
                else
                  ActiveRecord::Base.descendants
                end
+
+      models -= retrieve_models_exclude(env)
 
       # Filter the set of models to exclude:
       #   - The ActiveRecord::SchemaMigration model which is internal to Rails
